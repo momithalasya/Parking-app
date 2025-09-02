@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mb-4">User Dashboard</h2>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Your Active Bookings</h5>
+                <a href="{{ url_for('book_spot') }}" class="btn btn-primary">Book New Spot</a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Vehicle Number</th>
+                                <th>Parking Lot</th>
+                                <th>Spot Number</th>
+                                <th>Entry Time</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for booking in bookings %}
+                            <tr>
+                                <td>{{ booking.vehicle_number }}</td>
+                                <td>{{ booking.spot.lot.name }}</td>
+                                <td>{{ booking.spot.spot_number }}</td>
+                                <td>{{ booking.entry_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                <td>
+                                    <a href="{{ url_for('exit_parking', booking_id=booking.id) }}" 
+                                       class="btn btn-warning btn-sm"
+                                       onclick="return confirm('Are you sure you want to exit the parking?')">
+                                        Exit Parking
+                                    </a>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center">No active bookings</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Completed Bookings -->
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Completed Bookings</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Vehicle Number</th>
+                                <th>Parking Lot</th>
+                                <th>Spot Number</th>
+                                <th>Entry Time</th>
+                                <th>Exit Time</th>
+                                <th>Amount Paid (₹)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for booking in completed_bookings %}
+                            <tr>
+                                <td>{{ booking.vehicle_number }}</td>
+                                <td>{{ booking.spot.lot.name if booking.spot and booking.spot.lot else 'N/A' }}</td>
+                                <td>{{ booking.spot.spot_number if booking.spot else 'N/A' }}</td>
+                                <td>{{ booking.entry_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                <td>{{ booking.exit_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                <td>{{ booking.total_charge }}</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center">No completed bookings</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

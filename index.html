@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center text-center">
+    <div class="col-md-8">
+        <h1 class="display-4 mb-4">Welcome to Vehicle Parking Management System</h1>
+        <p class="lead mb-4">Efficiently manage your parking needs with our automated system.</p>
+        
+        {% if not session.get('user_id') %}
+        <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+            <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg">Login</a>
+            <a href="{{ url_for('register') }}" class="btn btn-outline-primary btn-lg">Register</a>
+        </div>
+        {% else %}
+            {% if session.get('is_admin') %}
+            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-primary btn-lg">Go to Admin Dashboard</a>
+            {% else %}
+            <a href="{{ url_for('user_dashboard') }}" class="btn btn-primary btn-lg">Go to User Dashboard</a>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">Hassle-Free Reservations</h5>
+                <p class="card-text">Reserve your parking space quickly and effortlessly.</p>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">Widespread Availability</h5>
+                <p class="card-text">Select parking spots from a range of locations citywide.</p>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">Trusted Security</h5>
+            <p class="card-text">We prioritize your vehicle's protection with reliable safety measures.</p>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

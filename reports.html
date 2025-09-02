@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mb-4">Parking Reports</h2>
+
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Active Bookings</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Vehicle Number</th>
+                                <th>Parking Lot</th>
+                                <th>Spot Number</th>
+                                <th>Entry Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for booking in active_bookings %}
+                            <tr>
+                                <td>{{ booking.user.username }}</td>
+                                <td>{{ booking.vehicle_number }}</td>
+                                <td>{{ booking.spot.lot.name }}</td>
+                                <td>{{ booking.spot.spot_number }}</td>
+                                <td>{{ booking.entry_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center">No active bookings</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Completed Bookings</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Vehicle Number</th>
+                                <th>Parking Lot</th>
+                                <th>Spot Number</th>
+                                <th>Entry Time</th>
+                                <th>Exit Time</th>
+                                <th>Duration</th>
+                                <th>Amount Received</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for booking in completed_bookings %}
+                            <tr>
+                                <td>{{ booking.user.username }}</td>
+                                <td>{{ booking.vehicle_number }}</td>
+                                <td>{{ booking.spot.lot.name if booking.spot and booking.spot.lot else 'Deleted Lot' }}</td>
+                                <td>{{ booking.spot.spot_number if booking.spot else 'Deleted Spot' }}</td>
+
+                                <td>{{ booking.entry_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                <td>{{ booking.exit_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                <td>
+                                    {% set duration = booking.exit_time - booking.entry_time %}
+                                    {% set total_seconds = duration.total_seconds()|int %}
+                                    {% set hours = (total_seconds // 3600) %}
+                                    {% set minutes = (total_seconds % 3600) // 60 %}
+                                    {% set seconds = total_seconds % 60 %}
+                                    {{ '%02d:%02d:%02d' % (hours, minutes, seconds) }}
+                                </td>
+                                <td>{{ '%.2f'|format(booking.total_charge) }} ₹</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="7" class="text-center">No completed bookings</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

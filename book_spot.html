@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="text-center">Book a Parking Spot</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="lot_id" class="form-label">Select Parking Lot</label>
+                        <select class="form-select" id="lot_id" name="lot_id" required>
+                            <option value="">Choose a parking lot</option>
+                            {% for lot in parking_lots %}
+                                {% set available = namespace(count=0) %}
+                                {% for spot in lot.spots %}
+                                    {% if not spot.is_occupied %}
+                                        {% set available.count = available.count + 1 %}
+                                    {% endif %}
+                                {% endfor %}
+                                {% if available.count > 0 %}
+                                    <option value="{{ lot.id }}">
+                                        {{ lot.name }} ({{ available.count }} spots available) - ₹{{ lot.price_per_hour }} per hr
+                                    </option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="vehicle_number" class="form-label">Vehicle Number</label>
+                        <input type="text" class="form-control" id="vehicle_number" name="vehicle_number" required>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Book Spot</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
